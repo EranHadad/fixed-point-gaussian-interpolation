@@ -4,7 +4,7 @@ clear; close; clc;
 % ------------------
 N = 1024;
 wintype = 'hamming'; % 'hamming' % 'rectwin'
-log_func = @log2; % @log2 % @log
+log_func = @log; % @log2 % @log
 k_target = 20.5;
 % -----------------------------------------------
 
