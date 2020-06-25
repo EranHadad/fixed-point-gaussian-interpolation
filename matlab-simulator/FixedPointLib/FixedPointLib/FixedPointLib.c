@@ -57,7 +57,7 @@ EXPORT s32 fxlog(s32 x) {
 /*
 fxlog_q7: implementation for Q7
 */
-EXPORT s32 fxlog_mod(s32 x) {
+EXPORT s32 fxlog_q7(s32 x) {
 	s32 t, y;
 	
 	y = 0x851;
@@ -72,6 +72,29 @@ EXPORT s32 fxlog_mod(s32 x) {
 	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0x8;
 	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x4;
 	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x2;
+	t = x + (x >> 7); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
+	x = 0x80000000 - x;
+	y -= x >> 24;
+	return y;
+}
+
+/*
+fxlog2_q7: implementation of log2 for Q7
+*/
+EXPORT s32 fxlog2_q7(s32 x) {
+	s32 t, y;
+	y = 0xc00;
+	if (x<0x00008000) x <<= 16, y -= 0x800;
+	if (x<0x00800000) x <<= 8, y -= 0x400;
+	if (x<0x08000000) x <<= 4, y -= 0x200;
+	if (x<0x20000000) x <<= 2, y -= 0x100;
+	if (x<0x40000000) x <<= 1, y -= 0x80;
+	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x4b;
+	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x29;
+	t = x + (x >> 3); if ((t & 0x80000000) == 0) x = t, y -= 0x16;
+	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0xb;
+	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x6;
+	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x3;
 	t = x + (x >> 7); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
 	x = 0x80000000 - x;
 	y -= x >> 24;

@@ -1,6 +1,7 @@
 % Script parameters:
 % ------------------
-func_name = 'fxlog_mod'; % 'fxlog' % 'fxlog_mod'
+func_name = 'fxlog_q7'; % 'fxlog' % 'fxlog_q7' % % 'fxlog2_q7'
+ref_log_func = @log; % @log2 % @log
 n_fraction_bits = 7; % 7 % 16
 xx = logspace(-6, 6, 100);
 % -----------------------------------------------
@@ -28,7 +29,7 @@ for n = 1:length(xx)
 end
 
 %% Display results
-matlab_log = log(xx);
+matlab_log = ref_log_func(xx);
 error = yy - matlab_log;
 relative_error = 100 * abs(error)./matlab_log;
 
@@ -49,6 +50,7 @@ semilogx(xx, error, 'color', 'b');
 hold on; semilogx(xx, error, '.', 'color', 'b');
 xlabel('x', 'fontsize', 16);
 ylabel('error(x)', 'fontsize', 16);
+title(sprintf('error std = %.4f', std(error(~isnan(error)))));
 grid on;
 
 linkaxes([ax1, ax2],'x');

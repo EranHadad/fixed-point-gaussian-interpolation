@@ -19,6 +19,7 @@ void matrix_to_csv(double arr[N_ROWS][N_COLS]);
 
 int main()
 {
+	/*
 	double matrix[N_ROWS][N_COLS]; // store x and various log(x) results as columns
 	double xvec[N_ROWS]; // values of x for log(x) comparison test between different log() implementations
 	s32 fxpTemp;
@@ -41,8 +42,9 @@ int main()
 
 	matrix_print(matrix);
 	//matrix_to_csv(matrix);
+	*/
 
-	//compute_log_terms(N_REF);
+	compute_log2_terms(N_VZ);
 
 	char ch;
 	puts("\nPlease type any key to continue...");

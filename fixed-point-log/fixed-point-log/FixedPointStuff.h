@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <math.h>
 
@@ -17,5 +18,9 @@ s32 fxlog(s32 x);
 
 s32 fxlog_q7(s32 x);
 
+s32 fxlog2_q7(s32 x);
+
 void compute_log_terms(_counter n); // for use in fxlog_Qn
+
+void compute_log2_terms(_counter n); // for use in fxlog2_Qn
 

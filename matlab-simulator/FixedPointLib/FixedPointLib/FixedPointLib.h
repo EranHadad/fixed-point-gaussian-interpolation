@@ -20,6 +20,8 @@ EXPORT bool is_positive_representable(double x, _counter n);
 
 EXPORT s32 fxlog(s32 x);
 
-EXPORT s32 fxlog_mod(s32 x);
+EXPORT s32 fxlog_q7(s32 x);
+
+EXPORT s32 fxlog2_q7(s32 x);
 
 #endif // !FIXEDPOINTLIB_H_
