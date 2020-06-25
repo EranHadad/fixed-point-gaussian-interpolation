@@ -9,7 +9,7 @@ double q_to_float(s32 x, _counter n) {
 }
 
 s32 float_to_q(double x, _counter n) {
-	return (s32)(x * (1 << n));
+	return (s32)round(x * (1 << n));
 }
 
 /*
@@ -24,6 +24,26 @@ bool is_positive_representable(double x, _counter n) {
 		return true;
 	}
 	return false;
+}
+
+void compute_log_terms(_counter n)
+{
+	_counter m = 32 - n;
+	double x = 1 << (m - 1);
+	s32 logVal = float_to_q(log(x), n);
+	printf("initial value = %05x\n", logVal);
+	printf("log(2^16) = %05x\n", float_to_q(log(1 << 16), n));
+	printf("log(2^8) = %05x\n", float_to_q(log(1 << 8), n));
+	printf("log(2^4) = %05x\n", float_to_q(log(1 << 4), n));
+	printf("log(2^2) = %05x\n", float_to_q(log(1 << 2), n));
+	printf("log(2^1) = %05x\n", float_to_q(log(1 << 1), n));
+	printf("log(3/2) = %05x\n", float_to_q(log((double)3 / 2), n));
+	printf("log(5/4) = %05x\n", float_to_q(log((double)5 / 4), n));
+	printf("log(9/8) = %05x\n", float_to_q(log((double)9 / 8), n));
+	printf("log(17/16) = %05x\n", float_to_q(log((double)17 / 16), n));
+	printf("log(33/32) = %05x\n", float_to_q(log((double)33 / 32), n));
+	printf("log(65/64) = %05x\n", float_to_q(log((double)65 / 64), n));
+	printf("log(129/128) = %05x\n", float_to_q(log((double)129 / 128), n));
 }
 
 /*
@@ -60,17 +80,18 @@ fxlog_q7: implementation for Q7
 s32 fxlog_q7(s32 x) {
 	s32 t, y;
 	y = 0x851;
-	if (x<0x00008000) x <<= 16, y -= 0x58b;
-	if (x<0x00800000) x <<= 8, y -= 0x2c5;
-	if (x<0x08000000) x <<= 4, y -= 0x162;
+	if (x<0x00008000) x <<= 16, y -= 0x58c;
+	if (x<0x00800000) x <<= 8, y -= 0x2c6;
+	if (x<0x08000000) x <<= 4, y -= 0x163;
 	if (x<0x20000000) x <<= 2, y -= 0xb1;
-	if (x<0x40000000) x <<= 1, y -= 0x58;
-	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x33;
-	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x1c;
+	if (x<0x40000000) x <<= 1, y -= 0x59;
+	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x34;
+	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x1d;
 	t = x + (x >> 3); if ((t & 0x80000000) == 0) x = t, y -= 0xf;
-	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0x7;
-	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x3;
-	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
+	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0x8;
+	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x4;
+	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x2;
+	t = x + (x >> 7); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
 	x = 0x80000000 - x;
 	y -= x >> 24;
 	return y;

@@ -9,7 +9,7 @@ EXPORT double q_to_float(s32 x, _counter n) {
 }
 
 EXPORT s32 float_to_q(double x, _counter n) {
-	return (s32)(x * (1 << n));
+	return (s32)round(x * (1 << n));
 }
 
 /*
@@ -59,18 +59,20 @@ fxlog_q7: implementation for Q7
 */
 EXPORT s32 fxlog_mod(s32 x) {
 	s32 t, y;
+	
 	y = 0x851;
-	if (x<0x00008000) x <<= 16, y -= 0x58b;
-	if (x<0x00800000) x <<= 8, y -= 0x2c5;
-	if (x<0x08000000) x <<= 4, y -= 0x162;
+	if (x<0x00008000) x <<= 16, y -= 0x58c;
+	if (x<0x00800000) x <<= 8, y -= 0x2c6;
+	if (x<0x08000000) x <<= 4, y -= 0x163;
 	if (x<0x20000000) x <<= 2, y -= 0xb1;
-	if (x<0x40000000) x <<= 1, y -= 0x58;
-	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x33;
-	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x1c;
+	if (x<0x40000000) x <<= 1, y -= 0x59;
+	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x34;
+	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x1d;
 	t = x + (x >> 3); if ((t & 0x80000000) == 0) x = t, y -= 0xf;
-	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0x7;
-	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x3;
-	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
+	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0x8;
+	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x4;
+	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x2;
+	t = x + (x >> 7); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
 	x = 0x80000000 - x;
 	y -= x >> 24;
 	return y;

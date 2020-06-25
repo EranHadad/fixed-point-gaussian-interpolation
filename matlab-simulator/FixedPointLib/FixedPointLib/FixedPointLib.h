@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <math.h>
+
 
 #define EXPORT __declspec(dllexport)
 

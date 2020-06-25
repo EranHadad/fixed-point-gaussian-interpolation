@@ -40,7 +40,9 @@ int main()
 	}
 
 	matrix_print(matrix);
-	matrix_to_csv(matrix);
+	//matrix_to_csv(matrix);
+
+	//compute_log_terms(N_REF);
 
 	char ch;
 	puts("\nPlease type any key to continue...");

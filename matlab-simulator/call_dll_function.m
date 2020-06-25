@@ -9,7 +9,7 @@ xx = logspace(-6, 6, 100);
 if ~libisloaded('FixedPointLib')
     dll_path = [pwd '\FixedPointLib\x64\Debug\FixedPointLib.dll'];
     h_path = [pwd '\FixedPointLib\FixedPointLib\FixedPointLib.h'];
-    loadlibrary(dll_path, h_path);
+    [notfound, warnings] = loadlibrary(dll_path, h_path);
 end
 
 % Display function signature.

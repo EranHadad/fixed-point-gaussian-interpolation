@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <stdbool.h>
+#include <math.h>
 
 typedef uint16_t _counter;
 typedef uint32_t u32;
@@ -15,4 +16,6 @@ bool is_positive_representable(double x, _counter n);
 s32 fxlog(s32 x);
 
 s32 fxlog_q7(s32 x);
+
+void compute_log_terms(_counter n); // for use in fxlog_Qn
 
