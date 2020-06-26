@@ -4,8 +4,9 @@ clear; close; clc;
 % ------------------
 N = 1024;
 wintype = 'hamming'; % 'hamming' % 'rectwin'
+imitate_hw_dynamic_range = true;
 log_func = @log; % @log2 % @log
-k_target = 20.5;
+k_target = 20.35;
 % -----------------------------------------------
 
 % generate signal
@@ -43,6 +44,14 @@ xlabel('bin index');
 amp_center = max_val;
 amp_left = xfft(max_ind - 1);
 amp_right = xfft(max_ind + 1);
+
+if imitate_hw_dynamic_range == true
+    % imitate HW behaviour (u16 dynamic range)
+    amp_center = round(amp_center * 2^7);
+    amp_left = round(amp_left * 2^7);
+    amp_right = round(amp_right * 2^7);
+end
+
 k_raw_est = max_ind - 1;
 fprintf('true bin index: %f\n', k_target);
 fprintf('bin index estimation without interplolation: %f\n', k_raw_est);

@@ -6,6 +6,7 @@ DEBUG_PRINT = false;
 % ------------------
 N = 1024;
 wintype = 'hamming'; % 'hamming' % 'rectwin'
+imitate_hw_dynamic_range = true;
 log_func = @log; % @log2 % @log
 bin_offset_vec = -0.5:0.01:0.5;
 bin_offset_vec = bin_offset_vec(:); % convert to column vector
@@ -47,6 +48,12 @@ for n = 1:length(k_target_vec)
     amp_right = xfft(max_ind + 1);
     k_raw_est = max_ind - 1;
     
+    if imitate_hw_dynamic_range == true
+        % imitate HW behaviour (u16 dynamic range)
+        amp_center = round(amp_center * 2^7);
+        amp_left = round(amp_left * 2^7);
+        amp_right = round(amp_right * 2^7);
+    end
     
     % parabolic interpolation
     bin_update_par = 0.5 * (amp_right - amp_left) / (2*amp_center - amp_right - amp_left);
