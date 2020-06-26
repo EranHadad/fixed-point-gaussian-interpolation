@@ -47,7 +47,10 @@ int main()
 	//compute_log2_terms(N_VZ);
 
 	s32 realIndex = calculateParabolicPeak(20, 32082, 6598, 25038);
-	printf("real index = %.5f\n", q_to_float(realIndex, N_VZ));
+	printf("real index (parabolic) = %.5f\n", q_to_float(realIndex, N_VZ));
+
+	realIndex = calculateGaussianPeak(20, 32082, 6598, 25038);
+	printf("real index (Gaussian) = %.5f\n", q_to_float(realIndex, N_VZ));
 
 	char ch;
 	puts("\nPlease type any key to continue...");

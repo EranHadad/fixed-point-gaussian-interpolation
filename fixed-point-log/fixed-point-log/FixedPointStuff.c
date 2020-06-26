@@ -47,6 +47,30 @@ s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnerg
 	return ((s32)index << p) + dxQ7;
 }
 
+s32 calculateGaussianPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
+{
+	s32 energySum = (s32)leftEnergy + (s32)rightEnergy;
+	s32 doubleEnergy = 2 * (s32)energy;
+	s32 dxQ16 = 0;
+	s32 dxQ7 = 0;
+
+	s32 logEnergy = fxlog((s32)energy << 16);
+	s32 logLeftEnergy = fxlog((s32)leftEnergy << 16);
+	s32 logRightEnergy = fxlog((s32)rightEnergy << 16);
+
+	if (energySum < doubleEnergy)
+	{
+		s32 logEnergyDiff = logLeftEnergy - logRightEnergy;
+		s32 logDenom = (s32)((logLeftEnergy + logRightEnergy) - 2 * logEnergy);
+
+		s64 temp = ((s64)logEnergyDiff << (16 - 1));   // shift p is due to fix point. -1 is because we need to multiple by 0.5
+		dxQ16 = logDenom != 0 ? (s32)(temp / logDenom) : 0;
+	}
+
+	dxQ7 = dxQ16 >> (16 - 7);
+	return ((s32)index << p) + dxQ7;
+}
+
 void compute_log_terms(_counter n)
 {
 	_counter m = 32 - n;
