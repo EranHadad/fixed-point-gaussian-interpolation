@@ -62,9 +62,9 @@ k_parabolic_est = k_raw_est + bin_update_par;
 fprintf('bin index estimation using parabolic interplolation: %f\n', k_parabolic_est);
 
 % gaussian interpolation
-amp_center = log_func(amp_center);
-amp_left = log_func(amp_left);
-amp_right = log_func(amp_right);
-bin_update_gau = 0.5 * (amp_right - amp_left) / (2*amp_center - amp_right - amp_left);
+log_amp_center = log_func(amp_center);
+log_amp_left = log_func(amp_left);
+log_amp_right = log_func(amp_right);
+bin_update_gau = 0.5 * (log_amp_right - log_amp_left) / (2*log_amp_center - log_amp_right - log_amp_left);
 k_gaussian_est = k_raw_est + bin_update_gau;
 fprintf('bin index estimation using gaussian interplolation: %f\n', k_gaussian_est);

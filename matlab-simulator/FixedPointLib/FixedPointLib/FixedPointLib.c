@@ -26,6 +26,26 @@ EXPORT bool is_positive_representable(double x, _counter n) {
 	return false;
 }
 
+s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
+{
+	s32 energySum = (s32)leftEnergy + (s32)rightEnergy;
+	s32 doubleEnergy = 2 * (s32)energy;
+	s32 dxQ7 = 0;
+	const _counter p = 7;
+
+	if (energySum < doubleEnergy)
+	{
+		s32 energyDiff = (s32)leftEnergy - (s32)rightEnergy;
+		s32 denom = (s32)(energySum - doubleEnergy);
+
+		// the following two lines replace the equation dxQ7 = 0.5 * logEnergyDiff / logDenom;
+		dxQ7 = (energyDiff << (p - 1)); // shift p is due to fix point. -1 is because we need to multiple by 0.5				
+		dxQ7 = denom != 0 ? dxQ7 / denom : 0;
+	}
+
+	return ((s32)index << p) + dxQ7;
+}
+
 /*
 Here is a sample C function to compute log() using the above algorithm.
 The code assumes integers are at least 32 bits long.

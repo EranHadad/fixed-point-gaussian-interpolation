@@ -1,5 +1,7 @@
 #include "FixedPointStuff.h"
 
+const _counter p = 7;
+
 /*
 x is the input fixed number which is of integer datatype
 n is the number of fractional bits for example in Q1.15 n = 15
@@ -24,6 +26,25 @@ bool is_positive_representable(double x, _counter n) {
 		return true;
 	}
 	return false;
+}
+
+s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
+{
+	s32 energySum = (s32)leftEnergy + (s32)rightEnergy;
+	s32 doubleEnergy = 2 * (s32)energy;
+	s32 dxQ7 = 0;
+
+	if (energySum < doubleEnergy)
+	{
+		s32 energyDiff = (s32)leftEnergy - (s32)rightEnergy;
+		s32 denom = (s32)(energySum - doubleEnergy);
+		
+		// the following two lines replace the equation dxQ7 = 0.5 * energyDiff / denom;
+		dxQ7 = (energyDiff << (p - 1)); // shift p is due to fix point. -1 is because we need to multiple by 0.5				
+		dxQ7 = denom != 0 ? dxQ7 / denom : 0;
+	}
+
+	return ((s32)index << p) + dxQ7;
 }
 
 void compute_log_terms(_counter n)
