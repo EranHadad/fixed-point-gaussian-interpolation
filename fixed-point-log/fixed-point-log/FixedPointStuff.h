@@ -20,13 +20,13 @@ s32 fxlog(s32 x);
 
 s32 fxlog_q7(s32 x);
 
-s32 fxlog2_q7(s32 x);
+s32 fxlog_mod(s32 x);
 
-void compute_log_terms(_counter n); // for use in fxlog_Qn
-
-void compute_log2_terms(_counter n); // for use in fxlog2_Qn
+void compute_log_terms(_counter n_in, _counter n_out); // for use in fxlog_Qn
 
 s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy);
 
 s32 calculateGaussianPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy);
+
+s32 calculateGaussianPeak_mod(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy);
 

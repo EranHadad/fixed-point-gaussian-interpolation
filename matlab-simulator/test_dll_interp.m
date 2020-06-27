@@ -32,8 +32,9 @@ end
 
 % vector to store the results
 k_parabolic_est = nan(size(k_target_vec));
-%k_gaussian_est  = nan(size(k_target_vec));
+k_gaussian_est  = nan(size(k_target_vec));
 k_c_parabolic   = nan(size(k_target_vec));
+k_c_gaussian    = nan(size(k_target_vec));
 
 nfft = N;
 nn = 0:(N-1);
@@ -60,6 +61,8 @@ for n = 1:length(k_target_vec)
     k_raw_est = max_ind - 1;
     
     % imitate HW behaviour (u16 dynamic range)
+    % Max FFT amplitute with rectangular window is 2^9=512, complement this
+    % to max of unsigned 16-bit we need to multiply by 2^7.
     amp_center = round(amp_center * 2^7);
     amp_left = round(amp_left * 2^7);
     amp_right = round(amp_right * 2^7);
@@ -69,16 +72,21 @@ for n = 1:length(k_target_vec)
     float_out = calllib('FixedPointLib', 'q_to_float', fxp_out, n_fraction_bits);
     k_c_parabolic(n) = float_out;
     
+    % C-Gaussian interpolation
+    fxp_out = calllib('FixedPointLib', 'calculateGaussianPeak', k_raw_est, amp_center, amp_left, amp_right);
+    float_out = calllib('FixedPointLib', 'q_to_float', fxp_out, n_fraction_bits);
+    k_c_gaussian(n) = float_out;
+    
     % parabolic interpolation
     bin_update_par = 0.5 * (amp_right - amp_left) / (2*amp_center - amp_right - amp_left);
     k_parabolic_est(n) = k_raw_est + bin_update_par;
     
     % gaussian interpolation
-    %amp_center = log_func(amp_center);
-    %amp_left = log_func(amp_left);
-    %amp_right = log_func(amp_right);
-    %bin_update_gau = 0.5 * (amp_right - amp_left) / (2*amp_center - amp_right - amp_left);
-    %k_gaussian_est(n) = k_raw_est + bin_update_gau;
+    amp_center = log_func(amp_center);
+    amp_left = log_func(amp_left);
+    amp_right = log_func(amp_right);
+    bin_update_gau = 0.5 * (amp_right - amp_left) / (2*amp_center - amp_right - amp_left);
+    k_gaussian_est(n) = k_raw_est + bin_update_gau;
     
     if DEBUG_PRINT == true
         fprintf('true bin index: %f\n', k_target);
@@ -90,14 +98,15 @@ end
 
 % compute error terms
 k_parabolic_err = k_parabolic_est - k_target_vec;
-%k_gaussian_err = k_gaussian_est - k_target_vec;
+k_gaussian_err = k_gaussian_est - k_target_vec;
 k_c_parabolic_err = k_c_parabolic - k_target_vec;
+k_c_gaussian_err = k_c_gaussian - k_target_vec;
 
 figure('name','error for bin index estimation');
-plot(bin_offset_vec, [k_parabolic_err, k_c_parabolic_err]);
+plot(bin_offset_vec, [k_parabolic_err, k_c_parabolic_err, k_gaussian_err, k_c_gaussian_err]);
 ylabel('error');
 xlabel('bin offset from FFT grid');
-legend('parabolic error (matlab)', 'parabolic error (C-code)');
+legend('parabolic error (MATLAB)', 'parabolic error (C-code)', 'Gaussian error (MATLAB)', 'Gaussian error (C-code)');
 grid on;
 
 %% Cleanup.

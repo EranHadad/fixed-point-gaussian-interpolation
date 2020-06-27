@@ -1,5 +1,7 @@
 #include "FixedPointLib.h"
 
+const _counter p = 7;
+
 /*
 x is the input fixed number which is of integer datatype
 n is the number of fractional bits for example in Q1.15 n = 15
@@ -26,12 +28,11 @@ EXPORT bool is_positive_representable(double x, _counter n) {
 	return false;
 }
 
-s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
+EXPORT s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
 {
 	s32 energySum = (s32)leftEnergy + (s32)rightEnergy;
 	s32 doubleEnergy = 2 * (s32)energy;
 	s32 dxQ7 = 0;
-	const _counter p = 7;
 
 	if (energySum < doubleEnergy)
 	{
@@ -43,6 +44,30 @@ s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnerg
 		dxQ7 = denom != 0 ? dxQ7 / denom : 0;
 	}
 
+	return ((s32)index << p) + dxQ7;
+}
+
+EXPORT s32 calculateGaussianPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
+{
+	s32 energySum = (s32)leftEnergy + (s32)rightEnergy;
+	s32 doubleEnergy = 2 * (s32)energy;
+	s32 dxQ24 = 0;
+	s32 dxQ7 = 0;
+
+	s32 logEnergy = fxlog_mod((s32)energy << 15);
+	s32 logLeftEnergy = fxlog_mod((s32)leftEnergy << 15);
+	s32 logRightEnergy = fxlog_mod((s32)rightEnergy << 15);
+
+	if (energySum < doubleEnergy)
+	{
+		s32 logEnergyDiff = logLeftEnergy - logRightEnergy;
+		s32 logDenom = (s32)((logLeftEnergy + logRightEnergy) - 2 * logEnergy);
+
+		s64 temp = ((s64)logEnergyDiff << (24 - 1));   // shift p is due to fix point. -1 is because we need to multiple by 0.5
+		dxQ24 = logDenom != 0 ? (s32)(temp / logDenom) : 0;
+	}
+
+	dxQ7 = dxQ24 >> (24 - 7);
 	return ((s32)index << p) + dxQ7;
 }
 
@@ -75,48 +100,25 @@ EXPORT s32 fxlog(s32 x) {
 }
 
 /*
-fxlog_q7: implementation for Q7
+fxlog_mod: implementation for Q15 input and Q24 output
 */
-EXPORT s32 fxlog_q7(s32 x) {
+s32 fxlog_mod(s32 x) {
 	s32 t, y;
-	
-	y = 0x851;
-	if (x<0x00008000) x <<= 16, y -= 0x58c;
-	if (x<0x00800000) x <<= 8, y -= 0x2c6;
-	if (x<0x08000000) x <<= 4, y -= 0x163;
-	if (x<0x20000000) x <<= 2, y -= 0xb1;
-	if (x<0x40000000) x <<= 1, y -= 0x59;
-	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x34;
-	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x1d;
-	t = x + (x >> 3); if ((t & 0x80000000) == 0) x = t, y -= 0xf;
-	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0x8;
-	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x4;
-	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x2;
-	t = x + (x >> 7); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
-	x = 0x80000000 - x;
-	y -= x >> 24;
-	return y;
-}
 
-/*
-fxlog2_q7: implementation of log2 for Q7
-*/
-EXPORT s32 fxlog2_q7(s32 x) {
-	s32 t, y;
-	y = 0xc00;
-	if (x<0x00008000) x <<= 16, y -= 0x800;
-	if (x<0x00800000) x <<= 8, y -= 0x400;
-	if (x<0x08000000) x <<= 4, y -= 0x200;
-	if (x<0x20000000) x <<= 2, y -= 0x100;
-	if (x<0x40000000) x <<= 1, y -= 0x80;
-	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x4b;
-	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x29;
-	t = x + (x >> 3); if ((t & 0x80000000) == 0) x = t, y -= 0x16;
-	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0xb;
-	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x6;
-	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x3;
-	t = x + (x >> 7); if ((t & 0x80000000) == 0) x = t, y -= 0x1;
+	y = 0xb17217f;
+	if (x<0x00008000) x <<= 16, y -= 0xb17217f;
+	if (x<0x00800000) x <<= 8, y -= 0x58b90c0;
+	if (x<0x08000000) x <<= 4, y -= 0x2c5c860;
+	if (x<0x20000000) x <<= 2, y -= 0x162e430;
+	if (x<0x40000000) x <<= 1, y -= 0xb17218;
+	t = x + (x >> 1); if ((t & 0x80000000) == 0) x = t, y -= 0x67cc90;
+	t = x + (x >> 2); if ((t & 0x80000000) == 0) x = t, y -= 0x391ff0;
+	t = x + (x >> 3); if ((t & 0x80000000) == 0) x = t, y -= 0x1e2707;
+	t = x + (x >> 4); if ((t & 0x80000000) == 0) x = t, y -= 0xf8518;
+	t = x + (x >> 5); if ((t & 0x80000000) == 0) x = t, y -= 0x7e0a7;
+	t = x + (x >> 6); if ((t & 0x80000000) == 0) x = t, y -= 0x3f815;
+	t = x + (x >> 7); if ((t & 0x80000000) == 0) x = t, y -= 0x1fe03;
 	x = 0x80000000 - x;
-	y -= x >> 24;
+	y -= x >> 7;
 	return y;
 }

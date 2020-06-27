@@ -6,7 +6,7 @@ N = 1024;
 wintype = 'hamming'; % 'hamming' % 'rectwin'
 imitate_hw_dynamic_range = true;
 log_func = @log; % @log2 % @log
-k_target = 20.35;
+k_target = 20.2;
 % -----------------------------------------------
 
 % generate signal

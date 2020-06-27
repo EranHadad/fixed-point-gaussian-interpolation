@@ -44,13 +44,25 @@ int main()
 	//matrix_to_csv(matrix);
 	*/
 
-	//compute_log2_terms(N_VZ);
+	if (false) {
+		//compute_log_terms(N_VZ);
+		compute_log_terms(15, 24);
+	}
+	
 
-	s32 realIndex = calculateParabolicPeak(20, 32082, 6598, 25038);
-	printf("real index (parabolic) = %.5f\n", q_to_float(realIndex, N_VZ));
+	if (true){
+		//s32 realIndex = calculateParabolicPeak(20, 32082, 6598, 25038);
+		s32 realIndex = calculateParabolicPeak(20, 34244, 9890, 20819);
+		printf("real index (parabolic) = %.5f\n", q_to_float(realIndex, N_VZ));
 
-	realIndex = calculateGaussianPeak(20, 32082, 6598, 25038);
-	printf("real index (Gaussian) = %.5f\n", q_to_float(realIndex, N_VZ));
+		//realIndex = calculateGaussianPeak(20, 32082, 6598, 25038);
+		realIndex = calculateGaussianPeak(20, 34244, 9890, 20819);
+		printf("real index (Gaussian) = %.5f\n", q_to_float(realIndex, N_VZ));
+
+		//realIndex = calculateGaussianPeak_mod(20, 32082, 6598, 25038);
+		realIndex = calculateGaussianPeak_mod(20, 34244, 9890, 20819);
+		printf("real index (Gaussian mod) = %.5f\n", q_to_float(realIndex, N_VZ));
+	}
 
 	char ch;
 	puts("\nPlease type any key to continue...");
