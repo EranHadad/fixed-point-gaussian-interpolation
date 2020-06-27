@@ -6,11 +6,11 @@ const _counter p = 7;
 x is the input fixed number which is of integer datatype
 n is the number of fractional bits for example in Q1.15 n = 15
 */
-EXPORT double q_to_float(s32 x, _counter n) {
+EXPORT double FixedToDouble(s32 x, _counter n) {
 	return (double)x / (u32)(1 << n);
 }
 
-EXPORT s32 float_to_q(double x, _counter n) {
+EXPORT s32 DoubleToFixed(double x, _counter n) {
 	return (s32)round(x * (1 << n));
 }
 
@@ -63,7 +63,7 @@ EXPORT s32 calculateGaussianPeak(u16 index, u16 energy, u16 leftEnergy, u16 righ
 		s32 logEnergyDiff = logLeftEnergy - logRightEnergy;
 		s32 logDenom = (s32)((logLeftEnergy + logRightEnergy) - 2 * logEnergy);
 
-		s64 temp = ((s64)logEnergyDiff << (24 - 1));   // shift p is due to fix point. -1 is because we need to multiple by 0.5
+		s64 temp = ((s64)logEnergyDiff << (24 - 1)); // shift 24 is due to fix point. -1 is because we need to multiple by 0.5
 		dxQ24 = logDenom != 0 ? (s32)(temp / logDenom) : 0;
 	}
 

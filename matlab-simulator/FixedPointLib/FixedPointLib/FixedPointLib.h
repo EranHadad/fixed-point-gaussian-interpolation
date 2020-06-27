@@ -13,9 +13,9 @@ typedef uint32_t u32;
 typedef int32_t s32;
 typedef int64_t s64;
 
-EXPORT double q_to_float(s32 x, _counter n);
+EXPORT double FixedToDouble(s32 x, _counter n);
 
-EXPORT s32 float_to_q(double x, _counter n);
+EXPORT s32 DoubleToFixed(double x, _counter n);
 
 EXPORT bool is_positive_representable(double x, _counter n);
 

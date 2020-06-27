@@ -1,9 +1,12 @@
 clear; close; clc;
 
+% background for the problem in hand, estimate frequency by detecting the peak of the FFT and 
+% perform parabolic or Gaussian interpolation.
+
 % Script parameters:
 % ------------------
 N = 1024;
-wintype = 'hamming'; % 'hamming' % 'rectwin'
+wintype = 'blackman-harris-nuttall'; % 'hamming' % 'rectwin' % 'blackman-harris-nuttall'
 imitate_hw_dynamic_range = true;
 log_func = @log; % @log2 % @log
 k_target = 20.2;
@@ -16,12 +19,13 @@ nn = 0:(N-1);
 nn = nn(:); % convert to column vector
 x = sin(w .* nn);
 
-% apply window
 switch wintype
-    case 'hamming'
-        x = x .* hamming(N);
+    case 'rectwin'
+        win = rectwin(N);
+    case 'blackman-harris-nuttall'
+        win = BlackmanHarrisNuttall(N);
     otherwise
-        x = x .* rectwin(N);
+        win = hamming(N);
 end
 
 % fourier transform (FFT)

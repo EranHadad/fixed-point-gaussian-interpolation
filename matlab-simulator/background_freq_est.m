@@ -1,11 +1,12 @@
 clear; close; clc;
 
-DEBUG_PRINT = false;
+% background for the problem in hand, estimate frequency by detecting the peak of the FFT and 
+% perform parabolic or Gaussian interpolation.
 
 % Script parameters:
 % ------------------
 N = 1024;
-wintype = 'hamming'; % 'hamming' % 'rectwin' % 'bhn'
+wintype = 'hamming'; % 'hamming' % 'blackman-harris-nuttall'
 imitate_hw_dynamic_range = true;
 bin_offset_vec = -0.5:0.01:0.5;
 bin_offset_vec = bin_offset_vec(:); % convert to column vector
@@ -15,7 +16,7 @@ k_target_vec = 20 + bin_offset_vec;
 switch wintype
     case 'rectwin'
         win = rectwin(N);
-    case 'bhn'
+    case 'blackman-harris-nuttall'
         win = BlackmanHarrisNuttall(N);
     otherwise
         win = hamming(N);
@@ -66,13 +67,6 @@ for n = 1:length(k_target_vec)
     amp_right = log(amp_right);
     bin_update_gau = 0.5 * (amp_right - amp_left) / (2*amp_center - amp_right - amp_left);
     k_gaussian_est(n) = k_raw_est + bin_update_gau;
-    
-    if DEBUG_PRINT == true
-        fprintf('true bin index: %f\n', k_target);
-        fprintf('bin index estimation without interplolation: %f\n', k_raw_est);
-        fprintf('bin index estimation using parabolic interplolation: %f\n', k_parabolic_est(n));
-        fprintf('bin index estimation using gaussian interplolation: %f\n\n', k_gaussian_est(n));
-    end
 end
 
 % compute error terms
@@ -81,8 +75,9 @@ k_gaussian_err = k_gaussian_est - k_target_vec;
 
 figure('name','error for bin index estimation');
 plot(bin_offset_vec, [k_parabolic_err, k_gaussian_err]);
-ylabel('error');
-xlabel('bin offset from FFT grid');
+title(sprintf('window type: %s', wintype), 'fontsize', 16);
+ylabel('error', 'fontsize', 16);
+xlabel('bin offset from FFT grid', 'fontsize', 16);
 legend('parabolic error', 'gaussian error');
 grid on; grid minor;
 
