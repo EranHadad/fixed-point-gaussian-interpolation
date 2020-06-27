@@ -5,9 +5,8 @@ DEBUG_PRINT = false;
 % Script parameters:
 % ------------------
 N = 1024;
-wintype = 'hamming'; % 'hamming' % 'rectwin'
+wintype = 'hamming'; % 'hamming' % 'rectwin' % 'bhn'
 imitate_hw_dynamic_range = true;
-log_func = @log; % @log2 % @log
 bin_offset_vec = -0.5:0.01:0.5;
 bin_offset_vec = bin_offset_vec(:); % convert to column vector
 k_target_vec = 20 + bin_offset_vec;
@@ -16,6 +15,8 @@ k_target_vec = 20 + bin_offset_vec;
 switch wintype
     case 'rectwin'
         win = rectwin(N);
+    case 'bhn'
+        win = BlackmanHarrisNuttall(N);
     otherwise
         win = hamming(N);
 end
@@ -60,9 +61,9 @@ for n = 1:length(k_target_vec)
     k_parabolic_est(n) = k_raw_est + bin_update_par;
     
     % gaussian interpolation
-    amp_center = log_func(amp_center);
-    amp_left = log_func(amp_left);
-    amp_right = log_func(amp_right);
+    amp_center = log(amp_center);
+    amp_left = log(amp_left);
+    amp_right = log(amp_right);
     bin_update_gau = 0.5 * (amp_right - amp_left) / (2*amp_center - amp_right - amp_left);
     k_gaussian_est(n) = k_raw_est + bin_update_gau;
     
@@ -83,7 +84,7 @@ plot(bin_offset_vec, [k_parabolic_err, k_gaussian_err]);
 ylabel('error');
 xlabel('bin offset from FFT grid');
 legend('parabolic error', 'gaussian error');
-grid on;
+grid on; grid minor;
 
 
 
