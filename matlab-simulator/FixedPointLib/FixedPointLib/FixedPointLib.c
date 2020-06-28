@@ -6,11 +6,11 @@ const _counter p = 7;
 x is the input fixed number which is of integer datatype
 n is the number of fractional bits for example in Q1.15 n = 15
 */
-EXPORT double FixedToDouble(s32 x, _counter n) {
+double FixedToDouble(s32 x, _counter n) {
 	return (double)x / (u32)(1 << n);
 }
 
-EXPORT s32 DoubleToFixed(double x, _counter n) {
+s32 DoubleToFixed(double x, _counter n) {
 	return (s32)round(x * (1 << n));
 }
 
@@ -18,7 +18,7 @@ EXPORT s32 DoubleToFixed(double x, _counter n) {
 is_positive_representable: returns true if x is positive and can be represent by a signed 32 bit fixed-point Qm.n
 positive because the log argument must be positive so we only interested in that range.
 */
-EXPORT bool is_positive_representable(double x, _counter n) {
+bool is_positive_representable(double x, _counter n) {
 	_counter m = 32 - n;
 	double resolution = (double)1 / (1 << n);
 	double max_positive = (double)(1 << (m - 1)) - resolution;
@@ -28,7 +28,7 @@ EXPORT bool is_positive_representable(double x, _counter n) {
 	return false;
 }
 
-EXPORT s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
+s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
 {
 	s32 energySum = (s32)leftEnergy + (s32)rightEnergy;
 	s32 doubleEnergy = 2 * (s32)energy;
@@ -47,7 +47,7 @@ EXPORT s32 calculateParabolicPeak(u16 index, u16 energy, u16 leftEnergy, u16 rig
 	return ((s32)index << p) + dxQ7;
 }
 
-EXPORT s32 calculateGaussianPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
+s32 calculateGaussianPeak(u16 index, u16 energy, u16 leftEnergy, u16 rightEnergy)
 {
 	s32 energySum = (s32)leftEnergy + (s32)rightEnergy;
 	s32 doubleEnergy = 2 * (s32)energy;
@@ -78,7 +78,7 @@ The(positive) argument and the result of the function are both expressed as fixe
 although intermediates are kept with 31 bits of precision to avoid loss of accuracy during shifts.
 After 12 steps of the algorithm the correction described above is applied.
 */
-EXPORT s32 fxlog(s32 x) {
+s32 fxlog(s32 x) {
 	s32 t, y;
 
 	y = 0xa65af;
