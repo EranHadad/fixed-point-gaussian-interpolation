@@ -1,4 +1,4 @@
-% clear; close; clc;
+clear; close; clc;
 
 % Script parameters:
 % ------------------
@@ -12,8 +12,8 @@ k_target_vec = 20 + bin_offset_vec;
 
 % Load the library.
 if ~libisloaded('FixedPointLib')
-    dll_path = [pwd '\FixedPointLib\x64\Debug\FixedPointLib.dll'];
-    h_path = [pwd '\FixedPointLib\FixedPointLib\FixedPointLib.h'];
+    dll_path = '..\FixedPointLib\x64\Debug\FixedPointLib.dll';
+    h_path = '..\FixedPointLib\FixedPointLib\FixedPointLib.h';
     [notfound, warnings] = loadlibrary(dll_path, h_path);
 end
 

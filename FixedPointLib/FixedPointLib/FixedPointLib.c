@@ -122,3 +122,21 @@ s32 fxlog_mod(s32 x) {
 	y -= x >> 7;
 	return y;
 }
+
+void compute_log_terms(_counter n_in, _counter n_out)
+{
+	_counter nShiftToQ31 = 32 - n_in;
+	printf("initial value	= %05x\n", DoubleToFixed(log((double)(1 << (nShiftToQ31-1))), n_out));
+	printf("log(2^16)		= %05x\n", DoubleToFixed(log(1 << 16), n_out));
+	printf("log(2^8)		= %05x\n", DoubleToFixed(log(1 << 8), n_out));
+	printf("log(2^4)		= %05x\n", DoubleToFixed(log(1 << 4), n_out));
+	printf("log(2^2)		= %05x\n", DoubleToFixed(log(1 << 2), n_out));
+	printf("log(2^1)		= %05x\n", DoubleToFixed(log(1 << 1), n_out));
+	printf("log(3/2)		= %05x\n", DoubleToFixed(log((double)3 / 2), n_out));
+	printf("log(5/4)		= %05x\n", DoubleToFixed(log((double)5 / 4), n_out));
+	printf("log(9/8)		= %05x\n", DoubleToFixed(log((double)9 / 8), n_out));
+	printf("log(17/16)		= %05x\n", DoubleToFixed(log((double)17 / 16), n_out));
+	printf("log(33/32)		= %05x\n", DoubleToFixed(log((double)33 / 32), n_out));
+	printf("log(65/64)		= %05x\n", DoubleToFixed(log((double)65 / 64), n_out));
+	printf("log(129/128)	= %05x\n", DoubleToFixed(log((double)129 / 128), n_out));
+}

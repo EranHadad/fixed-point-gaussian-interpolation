@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdio.h>
 
 typedef uint16_t _counter;
 typedef uint16_t u16;
@@ -30,5 +31,7 @@ FIXEDPOINTLIB_API s32 calculateGaussianPeak(u16 index, u16 energy, u16 leftEnerg
 FIXEDPOINTLIB_API s32 fxlog(s32 x);
 
 FIXEDPOINTLIB_API s32 fxlog_mod(s32 x);
+
+FIXEDPOINTLIB_API void compute_log_terms(_counter n_in, _counter n_out);
 
 #endif // !FIXEDPOINTLIB_H_
